@@ -91,6 +91,65 @@ if pil_img:
                 overlay = overlay_water(bgr, prob, alpha=0.45, thr=0.5)
                 st.image(cv2.cvtColor(overlay, cv2.COLOR_BGR2RGB), caption=f"Resultado Watershed – ¿Hay agua? {'Sí' if hay else 'No'}", use_container_width=True)
 
+                # --- Pestaña de diagnóstico 2×3 ---
+                tabs = st.tabs(["Resultado", "Diagnóstico Watershed"])
+                with tabs[0]:
+                    st.image(cv2.cvtColor(overlay, cv2.COLOR_BGR2RGB),
+                             caption=f"Resultado Watershed – ¿Hay agua? {'Sí' if hay else 'No'}",
+                             use_container_width=True)
+                
+                with tabs[1]:
+                    # Imágenes base
+                    rgb_orig = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+                    red_eq   = prep.get("red_eq")                  # CLAHE en canal rojo (uint8)
+                    th       = prep.get("th")                      # Otsu binario (uint8)
+                    dist     = prep.get("dist")                    # distancia normalizada [0..1] (float32)
+                    mask     = seg.get("mask")                     # máscara binaria 0/255 (uint8)
+                
+                    # 1) Original
+                    img1 = rgb_orig
+                
+                    # 2) CLAHE aplicada "en rojo"
+                    # (visual: solo el canal R contiene red_eq; G y B en 0 → se ve en tono rojo)
+                    if red_eq is not None:
+                        clahe_red_rgb = np.zeros_like(rgb_orig)
+                        clahe_red_rgb[..., 0] = red_eq  # canal R
+                    else:
+                        clahe_red_rgb = np.zeros_like(rgb_orig)
+                
+                    # 3) Otsu
+                    otsu_vis = th if th is not None else np.zeros(rgb_orig.shape[:2], dtype=np.uint8)
+                
+                    # 4) Distancia de Watershed (normalizada 0..1 → 0..255)
+                    if dist is not None:
+                        dist_vis = (np.clip(dist, 0, 1) * 255).astype(np.uint8)
+                    else:
+                        dist_vis = np.zeros(rgb_orig.shape[:2], dtype=np.uint8)
+                
+                    # 5) Máscara final
+                    mask_vis = mask if mask is not None else np.zeros(rgb_orig.shape[:2], dtype=np.uint8)
+                
+                    # 6) Superposición de bordes rojos sobre la original
+                    #    (bordes detectados sobre la máscara)
+                    edges = cv2.Canny(mask_vis, 100, 200)
+                    overlay_edges = rgb_orig.copy()
+                    # pinta de rojo los pixeles que son borde (R=255, G=B sin cambio)
+                    overlay_edges[..., 0] = np.where(edges > 0, 255, overlay_edges[..., 0])
+                
+                    # Grilla 2×3
+                    c1, c2 = st.columns(2)
+                    with c1:
+                        st.image(img1, caption="Original (RGB)", use_container_width=True)
+                        st.image(otsu_vis, caption="Otsu (binario)", use_container_width=True)
+                        st.image(mask_vis, caption="Máscara final", use_container_width=True)
+                    with c2:
+                        st.image(clahe_red_rgb, caption="CLAHE aplicado al canal rojo", use_container_width=True)
+                        st.image(dist_vis, caption="Distancia (watershed)", use_container_width=True)
+                        st.image(overlay_edges, caption="Bordes en rojo sobre original", use_container_width=True)
+
+
+                
+
         else:
             # CNN
             mdl = get_model('models/Red_best_model.keras')
