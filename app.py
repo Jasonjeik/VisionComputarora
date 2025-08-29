@@ -93,7 +93,7 @@ if pil_img:
 
         else:
             # CNN
-            mdl = get_model('models/CNNWater_best_model.keras')
+            mdl = get_model('models/Red_best_model.keras')
             if mdl is None:
                 st.warning("Modelo CNN no disponible. Se usará un umbral simple como fallback.")
             if st.button("🤖 Detectar con Red Neuronal"):
