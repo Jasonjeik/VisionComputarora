@@ -1,0 +1,9 @@
+streamlit
+streamlit-folium
+folium
+mercantile
+requests
+opencv-python-headless
+numpy
+Pillow
+tensorflow; platform_system != "Windows"  # opcional para cargar .keras si tienes GPU/CPU y quieres CNN real
