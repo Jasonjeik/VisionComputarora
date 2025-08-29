@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Watershed para cuerpos de agua.
-Extraído de: Actividad 5 (1).ipynb
+Extraído de: Proyecto Final Vision Computadora.ipynb
 Requiere: numpy, opencv-python (cv2)
 """
 import numpy as np
