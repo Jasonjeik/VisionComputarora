@@ -12,6 +12,7 @@ from tiles import stitch_from_bounds
 from methods.watershed import prep_red_clahe, watershed_segment
 from methods.cnn_infer import get_model, cnn_predict_tile, overlay_water
 
+
 st.set_page_config(page_title="Detector de Agua Satelital", layout="wide")
 
 st.title("🌊 Detector simple de cuerpos de agua (demo)")
