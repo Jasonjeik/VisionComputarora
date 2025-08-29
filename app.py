@@ -168,5 +168,5 @@ with st.expander("ℹ️ Notas y responsabilidades"):
     st.markdown("""
 - Esta app es una **demostración**. Las imágenes provienen de *Esri World Imagery*. Verifica los **términos de uso/licencia** antes de usos productivos.
 - El método *Watershed* puede fallar en ambientes con sombras/niebla o ríos turbios. Ajusta parámetros si es necesario.
-- La opción *Red Neuronal* espera un archivo `models/CNNWater_best_model.keras`. Si no existe, se usa un método de umbral simple como reserva.
+- La opción *Red Neuronal* espera un archivo `models/CNN_best_model.keras`. Si no existe, se usa un método de umbral simple como reserva.
 """)
